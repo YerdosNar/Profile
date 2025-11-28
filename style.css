@@ -270,16 +270,17 @@ body {
     }
 }
 
-/* Interactive Terminal */
+/* Interactive Terminal - Global (shown on all pages) */
 .interactive-terminal {
-    margin-top: 30px;
+    margin: 30px 20px 20px 20px;
     background-color: #0d1117;
     border: 2px solid #1793d1;
+    /* border-top: none; */
     border-radius: 6px;
     padding: 20px;
     box-shadow: 0 0 20px rgba(23, 147, 209, 0.3);
-    min-height: 300px;
-    max-height: 500px;
+    min-height: 250px;
+    max-height: 400px;
     overflow-y: auto;
 }
 

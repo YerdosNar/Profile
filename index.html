@@ -1,20 +1,105 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
     <head>
-        <title> Profile </title>
-        <link rel="style.css"
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Portfolio - Terminal</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <header>
-            <ul>
-                <li>Projects</li>
-                <li>About me</li>
-                <li>Assets</li>
-            </ul>
-            <img src="assets/failed.jpg">
-        </header>
-        <main>
-        </main>
+        <div class="terminal-container">
+            <!-- Terminal Header/Navigation -->
+            <header class="terminal-header">
+                <nav class="terminal-nav">
+                    <button class="nav-btn active" data-section="home">~/</button>
+                    <button class="nav-btn" data-section="projects">~/Projects</button>
+                    <button class="nav-btn" data-section="about">~/AboutMe</button>
+                    <button class="nav-btn" data-section="contact">~/Contact</button>
+                </nav>
+            </header>
+
+            <!-- Terminal Main Content -->
+            <main class="terminal-main">
+                <!-- Home Section -->
+                <section id="home" class="terminal-section active">
+                    <div class="terminal-output">
+                        <p class="prompt"><span class="user">guest@portfolio</span>:<span class="path">~</span>$ cat intro.txt</p>
+                        <div class="content">
+                            <h1>Welcome to My Portfolio</h1>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-output">
+                        <p class="prompt"><span class="user">guest@portfolio</span>:<span class="path">~</span>$ </p>
+                    </div>
+
+                    <!-- Terminal Demo Box -->
+                    <div class="terminal-demo">
+                        <div class="demo-header">
+                            <span class="demo-title">Try it yourself!</span>
+                        </div>
+                        <div class="demo-content">
+                            <p class="demo-prompt">$ curl ysap.sh</p>
+                            <p class="demo-output">
+                                # You can access this portfolio via curl!<br>
+                                # Just run the command above to see the text version
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Projects Section -->
+                <section id="projects" class="terminal-section">
+                    <div class="terminal-output">
+                        <p class="prompt"><span class="user">guest@portfolio</span>:<span class="path">~/Projects</span>$ ls -la</p>
+                        <div class="content">
+                            <p>Project content coming soon...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- About Me Section -->
+                <section id="about" class="terminal-section">
+                    <div class="terminal-output">
+                        <p class="prompt"><span class="user">guest@portfolio</span>:<span class="path">~/AboutMe</span>$ cat about.txt</p>
+                        <div class="content">
+                            <p>About me content coming soon...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact Section -->
+                <section id="contact" class="terminal-section">
+                    <div class="terminal-output">
+                        <p class="prompt"><span class="user">guest@portfolio</span>:<span class="path">~/Contact</span>$ cat contact.txt</p>
+                        <div class="content">
+                            <p>Contact information coming soon...</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <script>
+            // Terminal navigation
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.terminal-section');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetSection = button.getAttribute('data-section');
+                    
+                    // Remove active class from all buttons and sections
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding section
+                    button.classList.add('active');
+                    document.getElementById(targetSection).classList.add('active');
+                });
+            });
+        </script>
     </body>
 </html>

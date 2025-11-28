@@ -195,6 +195,144 @@ body {
     box-shadow: 0 0 15px rgba(125, 207, 255, 0.7);
 }
 
+/* File List Styling (ls -la output) */
+.file-list {
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: 14px;
+}
+
+.file-item {
+    display: flex;
+    gap: 10px;
+    padding: 5px 0;
+    transition: background-color 0.2s ease;
+    border-radius: 3px;
+}
+
+.file-item:hover {
+    background-color: rgba(23, 147, 209, 0.1);
+}
+
+.permissions {
+    color: #7dcfff;
+    min-width: 90px;
+}
+
+.links {
+    color: #86e1fc;
+    min-width: 20px;
+    text-align: right;
+}
+
+.owner, .group {
+    color: #8b949e;
+    min-width: 60px;
+}
+
+.size {
+    color: #c9d1d9;
+    min-width: 50px;
+    text-align: right;
+}
+
+.date {
+    color: #8b949e;
+    min-width: 100px;
+}
+
+.file-name {
+    color: #1793d1;
+    text-decoration: none;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(23, 147, 209, 0.4);
+    transition: all 0.2s ease;
+}
+
+.file-name:hover {
+    color: #7dcfff;
+    text-shadow: 0 0 10px rgba(125, 207, 255, 0.8);
+    text-decoration: underline;
+}
+
+/* Blinking Cursor */
+.cursor {
+    animation: blink 1s step-end infinite;
+    color: #1793d1;
+    text-shadow: 0 0 8px rgba(23, 147, 209, 0.6);
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+/* Interactive Terminal */
+.interactive-terminal {
+    margin-top: 30px;
+    background-color: #0d1117;
+    border: 2px solid #1793d1;
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(23, 147, 209, 0.3);
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.terminal-history {
+    margin-bottom: 10px;
+}
+
+.history-item {
+    margin-bottom: 15px;
+}
+
+.history-item .output {
+    color: #8b949e;
+    padding-left: 20px;
+    margin-top: 5px;
+    line-height: 1.6;
+}
+
+.history-item .output.error {
+    color: #ff6b6b;
+}
+
+.history-item .output .file-name {
+    color: #1793d1;
+    font-weight: bold;
+}
+
+.history-item .output .command {
+    color: #7dcfff;
+    font-weight: bold;
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #c9d1d9;
+    font-family: 'Courier New', 'Consolas', monospace;
+    font-size: 16px;
+    outline: none;
+    caret-color: #1793d1;
+}
+
+.terminal-input::selection {
+    background-color: rgba(23, 147, 209, 0.3);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     body {
@@ -216,5 +354,23 @@ body {
     
     .content h1 {
         font-size: 20px;
+    }
+
+    .file-list {
+        font-size: 12px;
+    }
+
+    .file-item {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .permissions, .links, .owner, .group, .size, .date {
+        min-width: auto;
+    }
+
+    .file-name {
+        flex-basis: 100%;
+        margin-top: 5px;
     }
 }

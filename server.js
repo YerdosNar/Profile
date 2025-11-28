@@ -16,7 +16,10 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     if (req.isCurl) {
         // Serve the text file for curl users
-        const indexTxt = fs.readFileSync(path.join(__dirname, 'index.txt'), 'utf8');
+        let indexTxt = fs.readFileSync(path.join(__dirname, 'index.txt'), 'utf8');
+        
+        // Convert \033 (literal text) to actual ESC character
+        indexTxt = indexTxt.replace(/\\033/g, '\x1b');
         
         // Replace placeholder with actual IP
         const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';

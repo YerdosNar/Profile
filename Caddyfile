@@ -1,0 +1,38 @@
+# Caddyfile - Caddy configuration for Portfolio website
+# Replace 'yourdomain.com' with your actual domain
+
+yourdomain.com {
+    # Enable automatic HTTPS
+    encode gzip
+
+    # Reverse proxy to Node.js server
+    reverse_proxy localhost:3000 {
+        # Pass the real client IP
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Optional: Add security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        # Prevent clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # Prevent MIME sniffing
+        X-Content-Type-Options "nosniff"
+        # Enable XSS protection
+        X-XSS-Protection "1; mode=block"
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/portfolio.log
+        format json
+    }
+}
+
+# Optional: Redirect www to non-www
+www.yourdomain.com {
+    redir https://yourdomain.com{uri} permanent
+}

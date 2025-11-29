@@ -139,7 +139,9 @@ body {
 /* Terminal Demo Box */
 .terminal-demo {
     margin-top: 30px;
+    margin-bottom: 0;
     border: 2px solid #1793d1;
+    /* border-bottom: none; */
     border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(23, 147, 209, 0.3);
@@ -272,7 +274,7 @@ body {
 
 /* Interactive Terminal - Global (shown on all pages) */
 .interactive-terminal {
-    margin: 30px 20px 20px 20px;
+    margin: 30px;
     background-color: #0d1117;
     border: 2px solid #1793d1;
     /* border-top: none; */
@@ -339,20 +341,20 @@ body {
     body {
         padding: 10px;
     }
-    
+
     .terminal-header {
         padding: 10px;
     }
-    
+
     .terminal-main {
         padding: 15px;
     }
-    
+
     .nav-btn {
         padding: 8px 15px;
         font-size: 14px;
     }
-    
+
     .content h1 {
         font-size: 20px;
     }

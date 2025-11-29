@@ -93,6 +93,15 @@ function updateTerminalPath(section) {
     };
     currentDir = pathMap[section] || currentDir;
     currentPath.textContent = currentDir;
+    
+    // Auto-execute commands when navigating to sections
+    if (section === 'projects') {
+        executeCommand('ls -la');
+    } else if (section === 'about') {
+        executeCommand('cat about.txt');
+    } else if (section === 'contact') {
+        executeCommand('cat contact.txt');
+    }
 }
 
 function addToHistory(command, output, isError = false) {
@@ -126,12 +135,43 @@ function executeCommand(input) {
     switch(command) {
         case 'ls':
             const items = directories[currentDir] || [];
-            const output = items.map(item => {
-                if (currentDir === '~/Projects') {
-                    return `<span class="file-name">${item}/</span>`;
-                }
-                return item.endsWith('.txt') ? item : `<span class="file-name">${item}/</span>`;
-            }).join('  ');
+            let output = '';
+            
+            // Check if -la flag is present
+            const isLongFormat = args.includes('-la') || args.includes('-l') || args.includes('-a');
+            
+            if (currentDir === '~/Projects' && isLongFormat) {
+                // Show fancy ls -la output for Projects
+                const projectsList = [
+                    { name: 'PNG_file_reader', url: 'https://github.com/YerdosNar/png.git' },
+                    { name: '3X-UI_auto_installer', url: 'https://github.com/YerdosNar/3x-ui-auto.git' },
+                    { name: 'NN_handwritten_digits', url: 'https://github.com/YerdosNar/digitNN.git' },
+                    { name: 'Profile', url: 'https://github.com/YerdosNar/Profile.git' }
+                ];
+                
+                output = '<div class="file-list">';
+                projectsList.forEach(project => {
+                    output += `<div class="file-item">
+                        <span class="permissions">drwxr-xr-x</span>
+                        <span class="links">2</span>
+                        <span class="owner">yerdos</span>
+                        <span class="group">users</span>
+                        <span class="size">4096</span>
+                        <span class="date">Nov 29 2025</span>
+                        <a href="${project.url}" class="file-name" target="_blank" rel="noopener">${project.name}/</a>
+                    </div>`;
+                });
+                output += '</div>';
+            } else {
+                // Simple format
+                output = items.map(item => {
+                    if (currentDir === '~/Projects') {
+                        return `<span class="file-name">${item}/</span>`;
+                    }
+                    return item.endsWith('.txt') ? item : `<span class="file-name">${item}/</span>`;
+                }).join('  ');
+            }
+            
             addToHistory(input, output);
             break;
 
@@ -195,11 +235,26 @@ function executeCommand(input) {
             } else if (args[0] === 'intro.txt' && currentDir === '~') {
                 addToHistory(input, `<h2>Welcome to My Portfolio</h2>
                             <p>I'm Yerdos, a 💻 Computer Science & Engineering student living in 🇰🇷 Korea.</p>
-                            <p>I’m passionate about low-level programming, networking, and security — and I’m currently learning deeper C, Assembly, and system-level development.</p>`);
-            } else if (args[0] === 'about.txt' && currentDir === '~/AboutMe') {
-                addToHistory(input, 'About me content coming soon...');
-            } else if (args[0] === 'contact.txt' && currentDir === '~/Contact') {
-                addToHistory(input, 'Contact information coming soon...');
+                            <p>I'm passionate about low-level programming, networking, and security — and I'm currently learning deeper C, Assembly, and system-level development.</p>`);
+            } else if (args[0] === 'about.txt') {
+                if (currentDir === '~/AboutMe' || currentDir === '~') {
+                    addToHistory(input, `<h2>About Me</h2>
+                            <p>I'm Yerdos, a 💻 Computer Science & Engineering student living in 🇰🇷 Korea.</p>
+                            <p>I'm passionate about low-level programming, networking, and security — and I'm currently learning deeper C, Assembly, and system-level development.</p>
+                            <p>I love exploring how computers work at the lowest levels, understanding network protocols, and building secure systems.</p>`);
+                } else {
+                    addToHistory(input, `cat: ${args[0]}: No such file or directory`, true);
+                }
+            } else if (args[0] === 'contact.txt') {
+                if (currentDir === '~/Contact' || currentDir === '~') {
+                    addToHistory(input, `<h2>Contact</h2>
+                            <p>📧 Email: contact@example.com</p>
+                            <p>🐙 GitHub: <a href="https://github.com/YerdosNar" target="_blank" class="file-name">github.com/YerdosNar</a></p>
+                            <p>💼 LinkedIn: Coming soon...</p>
+                            <p>🐦 Twitter: Coming soon...</p>`);
+                } else {
+                    addToHistory(input, `cat: ${args[0]}: No such file or directory`, true);
+                }
             } else {
                 addToHistory(input, `cat: ${args[0]}: No such file or directory`, true);
             }

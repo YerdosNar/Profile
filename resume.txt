@@ -1,0 +1,18 @@
+\x1b[38;2;23;147;209m+=========================================================================================+
+|                                     RESUME / CV                                         |
++=========================================================================================+\x1b[0m
+
+\x1b[1;33mYerdos - Software Developer\x1b[0m
+
+\x1b[1;32mInterests:\x1b[0m
+  • Low-level programming
+  • Network programming & traffic obfuscation
+  • Cyber Security
+  • Systems programming
+
+\x1b[1;32mSkills:\x1b[0m
+  • Programming Languages: C, C++, Python, JavaScript
+  • Technologies: Linux, Networking, Web Development
+  • Tools: Git, Docker, Node.js
+
+\x1b[38;2;23;147;209m+=========================================================================================+\x1b[0m

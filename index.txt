@@ -1,0 +1,18 @@
+\x1b[38;2;23;147;209m+=========================================================================================+
+|                                                                                         |
+|  \x1b[1;31mHi, I'm Yerdos. I'm interested in programming. Specifically in low-level programming   \x1b[38;2;23;147;209m|
+|                                                                                         |
+|  \x1b[1;31mAlso, I want to learn about networking, traffic obfuscation, traffic encryption, etc   \x1b[38;2;23;147;209m|
+|                                                                                         |
+|  \x1b[1;31mI am interested in Cyber Security in generall.                                         \x1b[38;2;23;147;209m|
+|                                                                                         |
+|                                                                                         |
+|                                                                                         |
+|  \x1b[1;31mProjects: \x1b[1;33mcurl profile.linm-m.com:8380/projects\x1b[38;2;23;147;209m                                        |
+|  \x1b[1;31mResume  : \x1b[1;33mcurl profile.linm-m.com:8380/resume  \x1b[38;2;23;147;209m                                        |
+|  \x1b[1;31mFor fun : \x1b[1;33mcurl profile.linm-m.com:8380/fun     \x1b[38;2;23;147;209m                                        |
+|  \x1b[1;31mJustCURL: \x1b[1;33mcurl profile.linm-m.com:8380         \x1b[38;2;23;147;209m                                        |
+|                                                                                         |
+|  \x1b[1;31mYour IP: \x1b[1;33m<public IP>\x1b[38;2;23;147;209m                                                                   |
+|                                                                                         |
++=========================================================================================+\x1b[0m

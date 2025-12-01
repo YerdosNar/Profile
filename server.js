@@ -16,17 +16,17 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     if (req.isCurl) {
         // Serve the text file for curl users
-        let indexTxt = fs.readFileSync(path.join(__dirname, 'index.txt'), 'utf8');
-        
-        // Convert \033 (literal text) to actual ESC character
-        indexTxt = indexTxt.replace(/\\033/g, '\x1b');
-        
-        // Replace placeholder with actual IP
+        let content = fs.readFileSync(path.join(__dirname, 'index.txt'), 'utf8');
+
+        // Process escape codes (convert literal \x1b to actual ESC character)
+        content = content.replace(/\\x1b/g, '\x1b');
+
+        // Replace placeholder with actual IP if exists
         const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
-        const output = indexTxt.replace('<public IP>', clientIP);
-        
+        content = content.replace(/<public IP>/g, clientIP);
+
         res.type('text/plain');
-        res.send(output);
+        res.send(content);
     } else {
         // Serve the HTML for browser users
         res.sendFile(path.join(__dirname, 'index.html'));
@@ -36,29 +36,9 @@ app.get('/', (req, res) => {
 // Projects route for curl
 app.get('/projects', (req, res) => {
     if (req.isCurl) {
-        const projects = `
-\x1b[38;2;23;147;209m+=========================================================================================+
-|                                     MY PROJECTS                                         |
-+=========================================================================================+\x1b[0m
-
-\x1b[1;33m1. PNG File Reader\x1b[0m
-   \x1b[1;34mhttps://github.com/YerdosNar/png.git\x1b[0m
-   A PNG file format parser and reader
-
-\x1b[1;33m2. 3X-UI Auto Installer\x1b[0m
-   \x1b[1;34mhttps://github.com/YerdosNar/3x-ui-auto.git\x1b[0m
-   Automated installation script for 3X-UI
-
-\x1b[1;33m3. Neural Network - Handwritten Digits\x1b[0m
-   \x1b[1;34mhttps://github.com/YerdosNar/digitNN.git\x1b[0m
-   Neural network for recognizing handwritten digits
-
-\x1b[1;33m4. Portfolio Website\x1b[0m
-   \x1b[1;34mhttps://github.com/YerdosNar/Profile.git\x1b[0m
-   This website! Terminal-styled portfolio
-
-\x1b[38;2;23;147;209m+=========================================================================================+\x1b[0m
-`;
+        let projects = fs.readFileSync(path.join(__dirname, 'projects.txt'), 'utf8');
+        // Process escape codes
+        projects = projects.replace(/\\x1b/g, '\x1b');
         res.type('text/plain');
         res.send(projects);
     } else {
@@ -69,26 +49,9 @@ app.get('/projects', (req, res) => {
 // Resume route for curl
 app.get('/resume', (req, res) => {
     if (req.isCurl) {
-        const resume = `
-\x1b[38;2;23;147;209m+=========================================================================================+
-|                                     RESUME / CV                                         |
-+=========================================================================================+\x1b[0m
-
-\x1b[1;33mYerdos - Software Developer\x1b[0m
-
-\x1b[1;32mInterests:\x1b[0m
-  • Low-level programming
-  • Network programming & traffic obfuscation
-  • Cyber Security
-  • Systems programming
-
-\x1b[1;32mSkills:\x1b[0m
-  • Programming Languages: C, C++, Python, JavaScript
-  • Technologies: Linux, Networking, Web Development
-  • Tools: Git, Docker, Node.js
-
-\x1b[38;2;23;147;209m+=========================================================================================+\x1b[0m
-`;
+        let resume = fs.readFileSync(path.join(__dirname, 'resume.txt'), 'utf8');
+        // Process escape codes
+        resume = resume.replace(/\\x1b/g, '\x1b');
         res.type('text/plain');
         res.send(resume);
     } else {
@@ -99,21 +62,9 @@ app.get('/resume', (req, res) => {
 // Fun route for curl
 app.get('/fun', (req, res) => {
     if (req.isCurl) {
-        const fun = `
-\x1b[38;2;23;147;209m+=========================================================================================+\x1b[0m
-                                     
-    \x1b[1;31m _____                 _                    
-   |_   _|__  _ __ _ __ (_)_ __   __ _ ___  
-     | |/ _ \\| '__| '_ \\| | '_ \\ / _\` / __|
-     | |  __/| |  | | | | | | | | (_| \\__ \\
-     |_|\\___||_|  |_| |_|_|_| |_|\\__,_|___/\x1b[0m
-                                     
-\x1b[1;33m   "In theory, there is no difference between theory and practice.
-    But in practice, there is."\x1b[0m
-                                     - Yogi Berra
-                                     
-\x1b[38;2;23;147;209m+=========================================================================================+\x1b[0m
-`;
+        let fun = fs.readFileSync(path.join(__dirname, 'fun.txt'), 'utf8');
+        // Process escape codes
+        fun = fun.replace(/\\x1b/g, '\x1b');
         res.type('text/plain');
         res.send(fun);
     } else {

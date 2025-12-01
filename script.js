@@ -1,19 +1,18 @@
-// Terminal navigation
 const navButtons = document.querySelectorAll('.nav-btn');
 const sections = document.querySelectorAll('.terminal-section');
 
 navButtons.forEach(button => {
     button.addEventListener('click', () => {
         const targetSection = button.getAttribute('data-section');
-        
+
         // Remove active class from all buttons and sections
         navButtons.forEach(btn => btn.classList.remove('active'));
         sections.forEach(section => section.classList.remove('active'));
-        
+
         // Add active class to clicked button and corresponding section
         button.classList.add('active');
         document.getElementById(targetSection).classList.add('active');
-        
+
         // Update terminal path based on section
         updateTerminalPath(targetSection);
     });
@@ -93,7 +92,7 @@ function updateTerminalPath(section) {
     };
     currentDir = pathMap[section] || currentDir;
     currentPath.textContent = currentDir;
-    
+
     // Auto-execute commands when navigating to sections
     if (section === 'projects') {
         executeCommand('ls -la');
@@ -107,19 +106,19 @@ function updateTerminalPath(section) {
 function addToHistory(command, output, isError = false) {
     const historyItem = document.createElement('div');
     historyItem.className = 'history-item';
-    
+
     const promptLine = document.createElement('p');
     promptLine.className = 'prompt';
     promptLine.innerHTML = `<span class="user">guest@portfolio</span>:<span class="path">${currentDir}</span>$ ${command}`;
     historyItem.appendChild(promptLine);
-    
+
     if (output) {
         const outputDiv = document.createElement('div');
         outputDiv.className = isError ? 'output error' : 'output';
         outputDiv.innerHTML = output;
         historyItem.appendChild(outputDiv);
     }
-    
+
     terminalHistory.appendChild(historyItem);
     terminalHistory.scrollTop = terminalHistory.scrollHeight;
 }
@@ -136,10 +135,10 @@ function executeCommand(input) {
         case 'ls':
             const items = directories[currentDir] || [];
             let output = '';
-            
+
             // Check if -la flag is present
             const isLongFormat = args.includes('-la') || args.includes('-l') || args.includes('-a');
-            
+
             if (currentDir === '~/Projects' && isLongFormat) {
                 // Show fancy ls -la output for Projects
                 const projectsList = [
@@ -148,7 +147,7 @@ function executeCommand(input) {
                     { name: 'NN_handwritten_digits', url: 'https://github.com/YerdosNar/digitNN.git' },
                     { name: 'Profile', url: 'https://github.com/YerdosNar/Profile.git' }
                 ];
-                
+
                 output = '<div class="file-list">';
                 projectsList.forEach(project => {
                     output += `<div class="file-item">
@@ -171,7 +170,7 @@ function executeCommand(input) {
                     return item.endsWith('.txt') ? item : `<span class="file-name">${item}/</span>`;
                 }).join('  ');
             }
-            
+
             addToHistory(input, output);
             break;
 
@@ -192,7 +191,7 @@ function executeCommand(input) {
                 }
             } else {
                 const targetDir = args[0];
-                
+
                 // Check if it's a project directory - redirect to GitHub
                 if (currentDir === '~/Projects' && projects[targetDir]) {
                     addToHistory(input, `Opening GitHub repository: ${targetDir}...`);
@@ -201,7 +200,7 @@ function executeCommand(input) {
                     }, 500);
                     break;
                 }
-                
+
                 // Check if it's a valid directory from current location
                 if (directories[currentDir]?.includes(targetDir)) {
                     if (targetDir === 'Projects') {
@@ -248,10 +247,11 @@ function executeCommand(input) {
             } else if (args[0] === 'contact.txt') {
                 if (currentDir === '~/Contact' || currentDir === '~') {
                     addToHistory(input, `<h2>Contact</h2>
-                            <p>📧 Email: contact@example.com</p>
-                            <p>🐙 GitHub: <a href="https://github.com/YerdosNar" target="_blank" class="file-name">github.com/YerdosNar</a></p>
-                            <p>💼 LinkedIn: Coming soon...</p>
-                            <p>🐦 Twitter: Coming soon...</p>`);
+                            <p>📧 Email: <span class="file-name">yerdosnarzhigit@gmail.com</span></p>
+                            <p>👾 GitHub: <a href="https://github.com/YerdosNar" target="_blank" class="file-name">github.com/YerdosNar</a></p>
+                            <p>💼 LinkedIn: <a href="https://linkedin.com/in/YerdosNar" class="file-name">YerdosNar</a></p>
+                            <p>🐦 Twitter/X: <a href="https://x.com/YerdosNar" class="file-name">@YerdosNar</a></p>
+                            <p>📷 Instagram: <a href="https://instagram.com/uvenni" class="file-name">@uvenni</a></p>`);
                 } else {
                     addToHistory(input, `cat: ${args[0]}: No such file or directory`, true);
                 }

@@ -1,21 +1,21 @@
-\x1b[38;2;23;147;209m+=========================================================================================+
+[38;2;23;147;209m+=========================================================================================+
 |                                     MY PROJECTS                                         |
-+=========================================================================================+\x1b[0m
++=========================================================================================+[0m
 
-\x1b[1;33m1. PNG File Reader\x1b[0m
-   \x1b[1;34mhttps://github.com/YerdosNar/png.git\x1b[0m
+[1;33m1. PNG File Reader[0m
+   [1;34mhttps://github.com/YerdosNar/png.git[0m
    A PNG file format parser and reader
 
-\x1b[1;33m2. 3X-UI Auto Installer\x1b[0m
-   \x1b[1;34mhttps://github.com/YerdosNar/3x-ui-auto.git\x1b[0m
+[1;33m2. 3X-UI Auto Installer[0m
+   [1;34mhttps://github.com/YerdosNar/3x-ui-auto.git[0m
    Automated installation script for 3X-UI
 
-\x1b[1;33m3. Neural Network - Handwritten Digits\x1b[0m
-   \x1b[1;34mhttps://github.com/YerdosNar/digitNN.git\x1b[0m
+[1;33m3. Neural Network - Handwritten Digits[0m
+   [1;34mhttps://github.com/YerdosNar/digitNN.git[0m
    Neural network for recognizing handwritten digits
 
-\x1b[1;33m4. Portfolio Website\x1b[0m
-   \x1b[1;34mhttps://github.com/YerdosNar/Profile.git\x1b[0m
+[1;33m4. Portfolio Website[0m
+   [1;34mhttps://github.com/YerdosNar/Profile.git[0m
    This website! Terminal-styled portfolio
 
-\x1b[38;2;23;147;209m+=========================================================================================+\x1b[0m
+[38;2;23;147;209m+=========================================================================================+[0m

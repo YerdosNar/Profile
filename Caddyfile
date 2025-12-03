@@ -1,6 +1,0 @@
-http://profile.linm-m.com {
-    redir https://profile.linm-m.com:8443{uri} permanent
-}
-https://profile.linm-m.com:8443 {
-    reverse_proxy localhost:3000
-}

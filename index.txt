@@ -8,10 +8,10 @@
 |                                                                                         |
 |                                                                                         |
 |                                                                                         |
-|  [1;31mProjects: [1;33mcurl profile.linm-m.com:8380/projects[38;2;23;147;209m                                        |
-|  [1;31mResume  : [1;33mcurl profile.linm-m.com:8380/resume  [38;2;23;147;209m                                        |
-|  [1;31mFor fun : [1;33mcurl profile.linm-m.com:8380/fun     [38;2;23;147;209m                                        |
-|  [1;31mJustCURL: [1;33mcurl profile.linm-m.com:8380         [38;2;23;147;209m                                        |
+|  [1;31mProjects: [1;33mcurl profile.linm-m.com/projects     [38;2;23;147;209m                                        |
+|  [1;31mResume  : [1;33mcurl profile.linm-m.com/resume       [38;2;23;147;209m                                        |
+|  [1;31mFor fun : [1;33mcurl profile.linm-m.com/fun          [38;2;23;147;209m                                        |
+|  [1;31mJustCURL: [1;33mcurl profile.linm-m.com              [38;2;23;147;209m                                        |
 |                                                                                         |
 |  [1;31mYour IP: [1;33m<public IP>[38;2;23;147;209m                                                                   |
 |                                                                                         |

@@ -76,11 +76,22 @@ const projects = {
     'Profile': 'https://github.com/YerdosNar/Profile.git'
 };
 
+// Assets/certificates mapping
+const assets = {
+    '35_45_profile.png': 'assets/35_45_profile.png',
+    'TOPIK_6lvl.png': 'assets/TOPIK_6lvl.png',
+    'IELTS.png': 'assets/IELTS.png',
+    'curl_index.png': 'assets/curl_index.png',
+    'failed.jpg': 'assets/failed.jpg',
+    'index_screenshot.png': 'assets/index_screenshot.png'
+};
+
 const directories = {
-    '~': ['Projects', 'AboutMe', 'Contact', 'intro.txt'],
+    '~': ['Projects', 'AboutMe', 'Contact', 'Assets', 'intro.txt'],
     '~/Projects': Object.keys(projects),
     '~/AboutMe': ['about.txt'],
-    '~/Contact': ['contact.txt']
+    '~/Contact': ['contact.txt'],
+    '~/Assets': Object.keys(assets)
 };
 
 function updateTerminalPath(section) {
@@ -88,7 +99,8 @@ function updateTerminalPath(section) {
         'home': '~',
         'projects': '~/Projects',
         'about': '~/AboutMe',
-        'contact': '~/Contact'
+        'contact': '~/Contact',
+        'assets': '~/Assets'
     };
     currentDir = pathMap[section] || currentDir;
     currentPath.textContent = currentDir;
@@ -100,6 +112,8 @@ function updateTerminalPath(section) {
         executeCommand('cat about.txt');
     } else if (section === 'contact') {
         executeCommand('cat contact.txt');
+    } else if (section === 'assets') {
+        executeCommand('ls -la');
     }
 }
 
@@ -161,6 +175,22 @@ function executeCommand(input) {
                     </div>`;
                 });
                 output += '</div>';
+            } else if (currentDir === '~/Assets' && isLongFormat) {
+                // Show fancy ls -la output for Assets
+                output = '<div class="file-list">';
+                Object.entries(assets).forEach(([name, path]) => {
+                    const size = name.includes('png') ? '2.3M' : '156K';
+                    output += `<div class="file-item">
+                        <span class="permissions">-rw-r--r--</span>
+                        <span class="links">1</span>
+                        <span class="owner">yerdos</span>
+                        <span class="group">users</span>
+                        <span class="size">${size}</span>
+                        <span class="date">Dec 04 2025</span>
+                        <a href="${path}" class="file-name" target="_blank" rel="noopener">${name}</a>
+                    </div>`;
+                });
+                output += '</div>';
             } else {
                 // Simple format
                 output = items.map(item => {
@@ -219,6 +249,11 @@ function executeCommand(input) {
                         currentPath.textContent = '~/Contact';
                         addToHistory(input, '');
                         navButtons[3].click();
+                    } else if (targetDir === 'Assets') {
+                        currentDir = '~/Assets';
+                        currentPath.textContent = '~/Assets';
+                        addToHistory(input, '');
+                        navButtons[4].click();
                     } else {
                         addToHistory(input, `bash: cd: ${targetDir}: Not a directory`, true);
                     }
@@ -231,6 +266,12 @@ function executeCommand(input) {
         case 'cat':
             if (!args[0]) {
                 addToHistory(input, 'cat: missing operand', true);
+            } else if (currentDir === '~/Assets' && assets[args[0]]) {
+                // For image files in Assets, show them as images
+                addToHistory(input, `<div class="asset-preview">
+                    <img src="${assets[args[0]]}" alt="${args[0]}" style="max-width: 100%; border: 2px solid #1793d1; border-radius: 4px; margin-top: 10px;">
+                    <p style="margin-top: 10px; color: #8b949e;">Certificate: ${args[0]}</p>
+                </div>`);
             } else if (args[0] === 'intro.txt' && currentDir === '~') {
                 addToHistory(input, `<h2>Welcome to My Portfolio</h2>
                             <p>I'm Yerdos, a 💻 Computer Science & Engineering student living in 🇰🇷 Korea.</p>

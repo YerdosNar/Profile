@@ -43,8 +43,34 @@ img {
 
 .terminal-nav {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.header-logo:hover {
+    transform: scale(1.05);
+}
+
+.header-logo img {
+    height: 40px;
+    width: auto;
+    border: 2px solid #1793d1;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(23, 147, 209, 0.5);
 }
 
 .nav-btn {

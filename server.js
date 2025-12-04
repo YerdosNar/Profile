@@ -72,6 +72,19 @@ app.get('/fun', (req, res) => {
     }
 });
 
+// Fun route for curl
+app.get('/neofetch', (req, res) => {
+    if (req.isCurl) {
+        let fun = fs.readFileSync(path.join(__dirname, 'neofetch.txt'), 'utf8');
+        // Process escape codes
+        fun = fun.replace(/\\x1b/g, '\x1b');
+        res.type('text/plain');
+        res.send(fun);
+    } else {
+        res.redirect('/');
+    }
+});
+
 // Serve static files (CSS, JS, assets)
 app.use(express.static(__dirname));
 

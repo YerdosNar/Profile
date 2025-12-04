@@ -78,22 +78,14 @@ const projects = {
 
 // Assets authentication
 let assetsAuthenticated = false;
-const ASSETS_PASSWORD = 'your_secure_password_here'; // Change this to your desired password
 
 // Public assets (always visible)
 const publicAssets = {
     'arch.iso': 'assets/arch.iso'
 };
 
-// Protected assets (require authentication)
-const protectedAssets = {
-    '35_45_profile.png': 'assets/35_45_profile.png',
-    'TOPIK_6lvl.png': 'assets/TOPIK_6lvl.png',
-    'IELTS.png': 'assets/IELTS.png',
-    'curl_index.png': 'assets/curl_index.png',
-    'failed.jpg': 'assets/failed.jpg',
-    'index_screenshot.png': 'assets/index_screenshot.png'
-};
+// FIX #1: Change 'const' to 'let' so we can update it after auth
+let protectedAssets = {};
 
 // Combined assets based on authentication
 function getAssets() {
@@ -110,7 +102,9 @@ const directories = {
     '~/Contact': ['contact.txt'],
     get '~/Assets'() {
         return Object.keys(getAssets());
-    }
+    },
+    // Add direct access support for subdirectories if needed
+    '~/Assets/': Object.keys(getAssets())
 };
 
 function updateTerminalPath(section) {
@@ -156,7 +150,8 @@ function addToHistory(command, output, isError = false) {
     terminalHistory.scrollTop = terminalHistory.scrollHeight;
 }
 
-function executeCommand(input) {
+// FIX #2: Added 'async' keyword here
+async function executeCommand(input) {
     const parts = input.trim().split(/\s+/);
     const command = parts[0].toLowerCase();
     const args = parts.slice(1);
@@ -166,7 +161,9 @@ function executeCommand(input) {
 
     switch(command) {
         case 'ls':
-            const items = directories[currentDir] || [];
+            // Handle both ~/Assets and ~/Assets/ (trailing slash) cases
+            const cleanCurrentDir = currentDir.endsWith('/') && currentDir !== '~/' ? currentDir.slice(0, -1) : currentDir;
+            const items = directories[cleanCurrentDir] || [];
             let output = '';
 
             // Check if -la flag is present
@@ -331,23 +328,6 @@ function executeCommand(input) {
             }
             break;
 
-        case 'auth':
-            if (!args[0]) {
-                addToHistory(input, 'auth: missing password. Usage: auth <password>', true);
-            } else if (currentDir === '~/Assets') {
-                if (args[0] === ASSETS_PASSWORD) {
-                    assetsAuthenticated = true;
-                    addToHistory(input, '<span style="color: #7dcfff;">✓ Authentication successful! All assets are now accessible.</span>');
-                    // Refresh the display
-                    setTimeout(() => executeCommand('ls -la'), 100);
-                } else {
-                    addToHistory(input, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span>', true);
-                }
-            } else {
-                addToHistory(input, 'auth: command only works in ~/Assets directory', true);
-            }
-            break;
-
         case 'clear':
             terminalHistory.innerHTML = '';
             break;
@@ -363,6 +343,43 @@ function executeCommand(input) {
                 <strong>Navigation:</strong><br>
                 cd Projects, cd AboutMe, cd Contact, cd Assets<br>
                 From ~/Projects, cd into any project to open GitHub`);
+            break;
+
+        case 'auth':
+            if (!args[0]) {
+                addToHistory(input, 'auth: missing password.\nUsage: auth <password>', true);
+                return;
+            }
+
+            if(currentDir === '~/Assets') {
+                try {
+                    addToHistory(input, 'Authenticating...');
+                    const response = await fetch('/api/auth-assets', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password: args[0] })
+                    });
+
+                    const data = await response.json();
+
+                    if(data.success) {
+                        assetsAuthenticated = true;
+                        protectedAssets = data.files; // This now works because protectedAssets is 'let'
+
+                        addToHistory(null, '<span style="color: #7dcfff;">✓ Authentication successful! Hidden assets loaded.</span>');
+
+                        // FIX #3: Added '-' to ls command so the long-format view triggers
+                        setTimeout(() => executeCommand('ls -la'), 100);
+                    } else {
+                        addToHistory(null, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span>', true);
+                    }
+                } catch(error) {
+                    addToHistory(null, '<span style="color: #ff6b6b;">✗ Server error. Try again later.</span>', true);
+                    console.error(error);
+                }
+            } else {
+                addToHistory(input, 'auth: command only works in ~/Assets directory', true);
+            }
             break;
 
         case '':

@@ -374,8 +374,8 @@ async function executeCommand(input) {
                         // FIX #3: Added '-' to ls command so the long-format view triggers
                         setTimeout(() => executeCommand('ls -la'), 100);
                     } else {
-                        addToHistory(null, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span>', true);
-                        addToHistory(null, '<img src="assets/failed.jpg">', true);
+                        addToHistory(null, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span><br><img src="assets/failed.jpg">', true);
+                        addToHistory(null, '<>', true);
                     }
                 } catch(error) {
                     addToHistory(null, '<span style="color: #ff6b6b;">✗ Server error. Try again later.</span>', true);

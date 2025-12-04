@@ -78,17 +78,28 @@ const projects = {
 
 // Assets authentication
 let assetsAuthenticated = false;
+let authToken = null; // Store the auth token
 
-// Public assets (always visible)
-const publicAssets = {
-    'arch.iso': 'assets/arch.iso',
-    'curl_index.png': 'assets/curl_index.png',
-    'failed.jpg': 'assets/failed.jpg',
-    'index_screenshot.png': 'assets/index_screenshot.png'
-};
+// Public assets - will be loaded dynamically
+let publicAssets = {};
 
 // FIX #1: Change 'const' to 'let' so we can update it after auth
 let protectedAssets = {};
+
+// Load public assets from server on page load
+async function loadPublicAssets() {
+    try {
+        const response = await fetch('/api/public-assets');
+        const data = await response.json();
+        publicAssets = data.files || {};
+    } catch (error) {
+        console.error('Failed to load public assets:', error);
+        publicAssets = {};
+    }
+}
+
+// Initialize public assets
+loadPublicAssets();
 
 // Combined assets based on authentication
 function getAssets() {
@@ -97,6 +108,58 @@ function getAssets() {
     }
     return publicAssets;
 }
+
+// Get the correct URL for an asset (protected assets need token-based URL)
+function getAssetUrl(filename) {
+    if (protectedAssets[filename] && authToken) {
+        // Protected assets are served via API with token
+        return `/api/protected-asset/${filename}`;
+    }
+    // Public assets are served directly
+    return `assets/${filename}`;
+}
+
+// Download protected asset with authentication
+async function downloadProtectedAsset(filename) {
+    if (!authToken) {
+        alert('Authentication required. Use the "auth <password>" command in the terminal.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/protected-asset/${filename}`, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+
+            // Open in new tab or download
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            // For images, open in new tab; for other files, download
+            if (filename.match(/\.(png|jpg|jpeg|gif|webp)$/i)) {
+                window.open(url, '_blank');
+            } else {
+                a.download = filename;
+                a.click();
+            }
+
+            // Clean up
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } else {
+            alert('Failed to download: Token may have expired. Please re-authenticate.');
+        }
+    } catch (error) {
+        console.error('Download error:', error);
+        alert('Failed to download protected asset.');
+    }
+}
+
+// Make it globally accessible
+window.downloadProtectedAsset = downloadProtectedAsset;
 
 const directories = {
     '~': ['Projects', 'AboutMe', 'Contact', 'Assets', 'intro.txt'],
@@ -198,8 +261,11 @@ async function executeCommand(input) {
                 // Show fancy ls -la output for Assets
                 const currentAssets = getAssets();
                 output = '<div class="file-list">';
-                Object.entries(currentAssets).forEach(([name, path]) => {
+                Object.entries(currentAssets).forEach(([name, _]) => {
                     const size = name.includes('png') ? '2.3M' : name.includes('iso') ? '850M' : '156K';
+                    const isProtected = protectedAssets[name] ? true : false;
+                    const assetUrl = isProtected ? '#' : `assets/${name}`;
+                    const clickHandler = isProtected ? `onclick="downloadProtectedAsset('${name}'); return false;"` : '';
                     output += `<div class="file-item">
                         <span class="permissions">-rw-r--r--</span>
                         <span class="links">1</span>
@@ -207,7 +273,7 @@ async function executeCommand(input) {
                         <span class="group">users</span>
                         <span class="size">${size}</span>
                         <span class="date">Dec 04 2025</span>
-                        <a href="${path}" class="file-name" target="_blank" rel="noopener">${name}</a>
+                        <a href="${assetUrl}" class="file-name${isProtected ? ' protected-asset' : ''}" ${clickHandler} ${isProtected ? '' : 'target="_blank" rel="noopener"'}>${isProtected ? '🔒 ' : ''}${name}</a>
                     </div>`;
                 });
                 output += '</div>';
@@ -292,11 +358,39 @@ async function executeCommand(input) {
             } else if (currentDir === '~/Assets') {
                 const currentAssets = getAssets();
                 if (currentAssets[args[0]]) {
-                    // For image files in Assets, show them as images
-                    addToHistory(input, `<div class="asset-preview">
-                        <img src="${currentAssets[args[0]]}" alt="${args[0]}" style="max-width: 100%; border: 2px solid #1793d1; border-radius: 4px; margin-top: 10px;">
-                        <p style="margin-top: 10px; color: #8b949e;">Certificate: ${args[0]}</p>
-                    </div>`);
+                    // Check if it's a protected asset
+                    if (protectedAssets[args[0]]) {
+                        if (!authToken) {
+                            addToHistory(input, `cat: ${args[0]}: Permission denied. Use 'auth <password>' to access.`, true);
+                        } else {
+                            // Fetch protected asset with token and display
+                            const assetUrl = `/api/protected-asset/${args[0]}`;
+                            try {
+                                const response = await fetch(assetUrl, {
+                                    headers: { 'Authorization': `Bearer ${authToken}` }
+                                });
+                                if (response.ok) {
+                                    const blob = await response.blob();
+                                    const objectUrl = URL.createObjectURL(blob);
+                                    addToHistory(input, `<div class="asset-preview">
+                                        <img src="${objectUrl}" alt="${args[0]}" style="max-width: 100%; border: 2px solid #1793d1; border-radius: 4px; margin-top: 10px;">
+                                        <p style="margin-top: 10px; color: #8b949e;">🔒 Protected: ${args[0]}</p>
+                                    </div>`);
+                                } else {
+                                    addToHistory(input, `cat: ${args[0]}: Error loading file. Token may have expired.`, true);
+                                }
+                            } catch (error) {
+                                addToHistory(input, `cat: ${args[0]}: Failed to load protected asset.`, true);
+                            }
+                        }
+                    } else {
+                        // Public asset - serve directly
+                        const assetUrl = `assets/${args[0]}`;
+                        addToHistory(input, `<div class="asset-preview">
+                            <img src="${assetUrl}" alt="${args[0]}" style="max-width: 100%; border: 2px solid #1793d1; border-radius: 4px; margin-top: 10px;">
+                            <p style="margin-top: 10px; color: #8b949e;">File: ${args[0]}</p>
+                        </div>`);
+                    }
                 } else if (protectedAssets[args[0]] && !assetsAuthenticated) {
                     addToHistory(input, `cat: ${args[0]}: Permission denied. Use 'auth <password>' to access.`, true);
                 } else {
@@ -367,6 +461,7 @@ async function executeCommand(input) {
 
                     if(data.success) {
                         assetsAuthenticated = true;
+                        authToken = data.token; // Store the auth token
                         protectedAssets = data.files; // This now works because protectedAssets is 'let'
 
                         addToHistory(null, '<span style="color: #7dcfff;">✓ Authentication successful! Hidden assets loaded.</span>');
@@ -374,8 +469,7 @@ async function executeCommand(input) {
                         // FIX #3: Added '-' to ls command so the long-format view triggers
                         setTimeout(() => executeCommand('ls -la'), 100);
                     } else {
-                        addToHistory(null, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span><br><img src="assets/failed.jpg">', true);
-                        addToHistory(null, '<>', true);
+                        addToHistory(null, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span><br><img src="assets/failed.jpg" style="height: 266px; width: 474px; border-radius: 10px; box-shadow: 0 0 10px rgba(255, 0, 0, 1.0); margin-top: 10px;" alt="failed_attempt_image">', true);
                     }
                 } catch(error) {
                     addToHistory(null, '<span style="color: #ff6b6b;">✗ Server error. Try again later.</span>', true);

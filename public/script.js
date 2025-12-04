@@ -81,7 +81,10 @@ let assetsAuthenticated = false;
 
 // Public assets (always visible)
 const publicAssets = {
-    'arch.iso': 'assets/arch.iso'
+    'arch.iso': 'assets/arch.iso',
+    'curl_index.png': 'assets/curl_index.png',
+    'failed.jpg': 'assets/failed.jpg',
+    'index_screenshot.png': 'assets/index_screenshot.png'
 };
 
 // FIX #1: Change 'const' to 'let' so we can update it after auth
@@ -372,6 +375,7 @@ async function executeCommand(input) {
                         setTimeout(() => executeCommand('ls -la'), 100);
                     } else {
                         addToHistory(null, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span>', true);
+                        addToHistory(null, '<img src="assets/failed.jpg">', true);
                     }
                 } catch(error) {
                     addToHistory(null, '<span style="color: #ff6b6b;">✗ Server error. Try again later.</span>', true);

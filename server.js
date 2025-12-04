@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,8 +9,10 @@ const PORT = process.env.PORT || 3000;
 // --- CONFIGURATION ---
 const publicPath = path.join(__dirname, 'public');
 
-// SECURITY: Set your password here (or use an environment variable)
-const SERVER_ASSET_PASSWORD = 'your_secure_password_here';
+// SECURITY: Store password hash instead of plain text
+// generate hash using `generate-hash.js`
+// Usage: ./generate-hash.js <your_password>
+const SERVER_ASSET_PASSWORD_HASH = '$2b$10$example.hash.replace.this.with.your.actual.bcrypt.hash';
 
 // SECURITY: Define protected assets here.
 // These paths are only sent to the client after successful auth.
@@ -17,9 +20,6 @@ const protectedAssets = {
     '35_45_profile.png': 'assets/35_45_profile.png',
     'TOPIK_6lvl.png': 'assets/TOPIK_6lvl.png',
     'IELTS.png': 'assets/IELTS.png',
-    'curl_index.png': 'assets/curl_index.png',
-    'failed.jpg': 'assets/failed.jpg',
-    'index_screenshot.png': 'assets/index_screenshot.png'
 };
 
 // --- MIDDLEWARE ---
@@ -42,20 +42,31 @@ app.use(express.static(publicPath, { index: false }));
 // --- API ROUTES ---
 
 // Auth Endpoint: Client sends password, Server validates and returns secret file list
-app.post('/api/auth-assets', (req, res) => {
+app.post('/api/auth-assets', async (req, res) => {
     const { password } = req.body;
 
-    if (password === SERVER_ASSET_PASSWORD) {
-        console.log(`[Auth] Successful access from ${req.ip}`);
-        res.json({
-            success: true,
-            files: protectedAssets
-        });
-    } else {
-        console.log(`[Auth] Failed attempt from ${req.ip}`);
-        res.status(401).json({
+    try {
+        // Compare the password with the stored hash
+        const isValid = await bcrypt.compare(password, SERVER_ASSET_PASSWORD_HASH);
+
+        if (isValid) {
+            console.log(`[Auth] Successful access from ${req.ip}`);
+            res.json({
+                success: true,
+                files: protectedAssets
+            });
+        } else {
+            console.log(`[Auth] Failed attempt from ${req.ip}`);
+            res.status(401).json({
+                success: false,
+                message: 'Invalid password'
+            });
+        }
+    } catch (error) {
+        console.error('[Auth] Error during password verification:', error);
+        res.status(500).json({
             success: false,
-            message: 'Invalid password'
+            message: 'Authentication error'
         });
     }
 });

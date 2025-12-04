@@ -92,7 +92,7 @@ app.use(express.static(__dirname));
 app.get('*', (req, res) => {
     if (req.isCurl) {
         res.type('text/plain');
-        res.send('404 - Not Found\nTry: curl domain.com/projects or curl domain.com/resume');
+        res.send('404 - Not Found\nTry: curl profile.linm-m.com/projects or curl profile.linm-m.com/resume\n');
     } else {
         res.sendFile(path.join(__dirname, 'index.html'));
     }
@@ -102,3 +102,4 @@ app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Try: curl http://localhost:${PORT}`);
 });
+

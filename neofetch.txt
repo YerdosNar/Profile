@@ -19,7 +19,7 @@
 `++:.                           `-/+/
 .`                                 `/
 [0m
-[1G[18A[41C OS: [53GArch Linux x86_64
+[1G[18A[41C OS: [53GLFS Arch Linux x86_64
 [41C󰌢 Host: [53Gprofile.linm-m.com
 [41C Uptime: [53G365 days, 25 hours, 61 mins
 [41C WM: [53GHyprland 0.52.1 (Wayland)

@@ -1,0 +1,40 @@
+[38;2;23;147;209m
+                  -`
+                 .o+`
+                `ooo/
+               `+oooo:
+              `+oooooo:
+              -+oooooo+:
+            `/:-:++oooo+:
+           `/++++/+++++++:
+          `/++++++++++++++:
+         `/+++ooooooooooooo/`
+        ./ooosssso++osssssso+`
+       .oossssso-````/ossssss+`
+      -osssssso.      :ssssssso.
+     :osssssss/        osssso+++.
+    /ossssssss/        +ssssooo/-
+  `/ossssso+/:-        -:/+osssso+-
+ `+sso+:-`                 `.-/+oso:
+`++:.                           `-/+/
+.`                                 `/
+[0m
+[1G[18A[41C OS: [53GArch Linux x86_64
+[41C󰌢 Host: [53Gprofile.linm-m.com
+[41C Uptime: [53G365 days, 25 hours, 61 mins
+[41C WM: [53GHyprland 0.52.1 (Wayland)
+[41C CPU: [53GGood CPU Model Amazing @ 10.0 GHz
+[41C󰾲 GPU: [53GGood GPU Model Amazing @ 100.0 GHz
+[41C Memory: [53G500 MiB / 2 TiB (0.0%)
+[41C Disk: [53G1.0 GiB / 112.61 PiB (0.0%) - ext4
+[41C󰩟 Local IP: [53G127.0.0.1/8
+[41C Battery: [53G100% (∞ remaining) [Discharging]
+
+
+
+
+
+
+
+
+

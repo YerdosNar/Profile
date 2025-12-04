@@ -5,12 +5,16 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const publicPath = path.join(__dirname, 'public');
+
 // Middleware to detect curl vs browser
 app.use((req, res, next) => {
     const userAgent = req.headers['user-agent'] || '';
     req.isCurl = userAgent.toLowerCase().includes('curl');
     next();
 });
+
+app.use(express.static(publicPath));
 
 // Main route
 app.get('/', (req, res) => {
@@ -20,10 +24,6 @@ app.get('/', (req, res) => {
 
         // Process escape codes (convert literal \x1b to actual ESC character)
         content = content.replace(/\\x1b/g, '\x1b');
-
-        // Replace placeholder with actual IP if exists
-        const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
-        content = content.replace(/<public IP>/g, clientIP);
 
         res.type('text/plain');
         res.send(content);

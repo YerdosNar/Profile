@@ -76,8 +76,17 @@ const projects = {
     'Profile': 'https://github.com/YerdosNar/Profile.git'
 };
 
-// Assets/certificates mapping
-const assets = {
+// Assets authentication
+let assetsAuthenticated = false;
+const ASSETS_PASSWORD = 'your_secure_password_here'; // Change this to your desired password
+
+// Public assets (always visible)
+const publicAssets = {
+    'arch.iso': 'assets/arch.iso'
+};
+
+// Protected assets (require authentication)
+const protectedAssets = {
     '35_45_profile.png': 'assets/35_45_profile.png',
     'TOPIK_6lvl.png': 'assets/TOPIK_6lvl.png',
     'IELTS.png': 'assets/IELTS.png',
@@ -86,12 +95,22 @@ const assets = {
     'index_screenshot.png': 'assets/index_screenshot.png'
 };
 
+// Combined assets based on authentication
+function getAssets() {
+    if (assetsAuthenticated) {
+        return { ...publicAssets, ...protectedAssets };
+    }
+    return publicAssets;
+}
+
 const directories = {
     '~': ['Projects', 'AboutMe', 'Contact', 'Assets', 'intro.txt'],
     '~/Projects': Object.keys(projects),
     '~/AboutMe': ['about.txt'],
     '~/Contact': ['contact.txt'],
-    '~/Assets': Object.keys(assets)
+    get '~/Assets'() {
+        return Object.keys(getAssets());
+    }
 };
 
 function updateTerminalPath(section) {
@@ -177,9 +196,10 @@ function executeCommand(input) {
                 output += '</div>';
             } else if (currentDir === '~/Assets' && isLongFormat) {
                 // Show fancy ls -la output for Assets
+                const currentAssets = getAssets();
                 output = '<div class="file-list">';
-                Object.entries(assets).forEach(([name, path]) => {
-                    const size = name.includes('png') ? '2.3M' : '156K';
+                Object.entries(currentAssets).forEach(([name, path]) => {
+                    const size = name.includes('png') ? '2.3M' : name.includes('iso') ? '850M' : '156K';
                     output += `<div class="file-item">
                         <span class="permissions">-rw-r--r--</span>
                         <span class="links">1</span>
@@ -191,6 +211,9 @@ function executeCommand(input) {
                     </div>`;
                 });
                 output += '</div>';
+                if (!assetsAuthenticated) {
+                    output += '<p style="color: #ff6b6b; margin-top: 15px; padding: 10px; border: 1px solid #ff6b6b; border-radius: 4px;">⚠️ To access other files, contact me or use: <span style="color: #7dcfff;">auth &lt;password&gt;</span></p>';
+                }
             } else {
                 // Simple format
                 output = items.map(item => {
@@ -266,12 +289,19 @@ function executeCommand(input) {
         case 'cat':
             if (!args[0]) {
                 addToHistory(input, 'cat: missing operand', true);
-            } else if (currentDir === '~/Assets' && assets[args[0]]) {
-                // For image files in Assets, show them as images
-                addToHistory(input, `<div class="asset-preview">
-                    <img src="${assets[args[0]]}" alt="${args[0]}" style="max-width: 100%; border: 2px solid #1793d1; border-radius: 4px; margin-top: 10px;">
-                    <p style="margin-top: 10px; color: #8b949e;">Certificate: ${args[0]}</p>
-                </div>`);
+            } else if (currentDir === '~/Assets') {
+                const currentAssets = getAssets();
+                if (currentAssets[args[0]]) {
+                    // For image files in Assets, show them as images
+                    addToHistory(input, `<div class="asset-preview">
+                        <img src="${currentAssets[args[0]]}" alt="${args[0]}" style="max-width: 100%; border: 2px solid #1793d1; border-radius: 4px; margin-top: 10px;">
+                        <p style="margin-top: 10px; color: #8b949e;">Certificate: ${args[0]}</p>
+                    </div>`);
+                } else if (protectedAssets[args[0]] && !assetsAuthenticated) {
+                    addToHistory(input, `cat: ${args[0]}: Permission denied. Use 'auth <password>' to access.`, true);
+                } else {
+                    addToHistory(input, `cat: ${args[0]}: No such file or directory`, true);
+                }
             } else if (args[0] === 'intro.txt' && currentDir === '~') {
                 addToHistory(input, `<h2>Welcome to My Portfolio</h2>
                             <p>I'm Yerdos, a 💻 Computer Science & Engineering student living in 🇰🇷 Korea.</p>
@@ -301,6 +331,23 @@ function executeCommand(input) {
             }
             break;
 
+        case 'auth':
+            if (!args[0]) {
+                addToHistory(input, 'auth: missing password. Usage: auth <password>', true);
+            } else if (currentDir === '~/Assets') {
+                if (args[0] === ASSETS_PASSWORD) {
+                    assetsAuthenticated = true;
+                    addToHistory(input, '<span style="color: #7dcfff;">✓ Authentication successful! All assets are now accessible.</span>');
+                    // Refresh the display
+                    setTimeout(() => executeCommand('ls -la'), 100);
+                } else {
+                    addToHistory(input, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span>', true);
+                }
+            } else {
+                addToHistory(input, 'auth: command only works in ~/Assets directory', true);
+            }
+            break;
+
         case 'clear':
             terminalHistory.innerHTML = '';
             break;
@@ -310,10 +357,11 @@ function executeCommand(input) {
                 <span class="command">ls</span> - list directory contents<br>
                 <span class="command">cd [dir]</span> - change directory<br>
                 <span class="command">cat [file]</span> - display file contents<br>
+                <span class="command">auth [password]</span> - authenticate for protected assets<br>
                 <span class="command">clear</span> - clear terminal<br>
                 <span class="command">help</span> - show this help message<br><br>
                 <strong>Navigation:</strong><br>
-                cd Projects, cd AboutMe, cd Contact<br>
+                cd Projects, cd AboutMe, cd Contact, cd Assets<br>
                 From ~/Projects, cd into any project to open GitHub`);
             break;
 

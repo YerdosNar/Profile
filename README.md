@@ -1,18 +1,24 @@
 # Profile page (`curl`able)
 
 - ## Intro:
-    - [Requirements](#requirements)
-    - [One-liner](#one-line-installation)
-    - [Manual installation](#manual-installation)
-    - [cURL support](#curl-support)
-    - [Firewall](#firewall)
-- ## Simple profile page for recruiters.
-![index.html Page](./public/assets/index_screenshot.png)
+    - #### [Explanation](#basic-explanation)
+    - #### [Requirements](#requirements)
+    - #### [Structure](#structure)
+    - #### [One-liner](#one-line-installation)
+    - #### [Manual installation](#manual-installation)
+    - #### [cURL support](#curl-support)
+    - #### [Firewall](#firewall)
 
-- ## You can also `curl example.com`
-![curl example.com](./public/assets/curl_index.png)
+---
+- ## Basic explanation:
+    - #### Simple profile page for recruiters.
+    ![index.html Page](./public/assets/index_screenshot.png)
 
-- ## Requirements
+    - ##### You can also `curl example.com`
+    ![curl example.com](./public/assets/curl_index.png)
+
+---
+- ## Requirements:
     - #### Caddy:
         For reverse proxy.
     - #### curl:
@@ -26,12 +32,28 @@
     - #### systemctl:
         To start daemons `systemctl daemon-reload`
 
+---
+- ## Structure:
+    - #### `public` directory:
+        Contains all of the necessary files for browser.
+    - #### `assets` directory:
+        Contains files that are accessible without authentication.
+    - #### `protected-assets` directory:
+        Contains files that are accessible only after authentication.\
+        Place your files that only people with password can view.
+    - #### `server.js` file:
+        Server, responsible for authentication and detecting `curl` requests.
+    - #### `profile.server` file:
+        Meant to stay in `/etc/systemd/system/`.
+
+---
 - ## One line installation
     ```bash
     bash <(curl -Ls https://raw.githubusercontent.com/YerdosNar/Profile/master/install.sh)
     ```
     >Required commands should be installed manually though.
 
+---
 - ## Manual installation
     - #### Clone to profile directory
         ```bash
@@ -89,6 +111,7 @@
         WantedBy=multi-user.target
         ```
 
+---
 - ## `curl` support
     - #### `curl` without `https://`
         - ##### Caddyfile content
@@ -140,6 +163,8 @@
             ```
             curl https://example.com
             ```
+
+---
 - ## Firewall
     ```bash
     sudo ufw allow 80

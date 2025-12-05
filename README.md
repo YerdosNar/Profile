@@ -1,12 +1,37 @@
 # Profile page (`curl`able)
 
+- ## Intro:
+    - [Requirements](#requirements)
+    - [One-liner](#one-line-installation)
+    - [Manual installation](#manual-installation)
+    - [cURL support](#curl-support)
+    - [Firewall](#firewall)
 - ## Simple profile page for recruiters.
 ![index.html Page](./public/assets/index_screenshot.png)
 
 - ## You can also `curl example.com`
 ![curl example.com](./public/assets/curl_index.png)
 
-- ## Installation
+- ## Requirements
+    - #### Caddy:
+        For reverse proxy.
+    - #### curl:
+        It's all about `curl`ability.
+    - #### npm, node:
+        To install dependencies. `npm install`
+    - #### git:
+        To `git clone`
+    - #### ufw:
+        To manage firewall `sudo ufw allow 80 && sudo ufw allow 443`
+    - #### systemctl:
+        To start daemons `systemctl daemon-reload`
+
+- ## One line installation
+    ```bash
+    bash <(curl -Ls https://raw.githubusercontent.com/YerdosNar/Profile/master/install.sh)
+    ```
+
+- ## Manual installation
     - #### Clone to profile directory
         ```bash
         sudo mkdir -p /var/www/profile
@@ -114,9 +139,9 @@
             ```
             curl https://example.com
             ```
-    - #### Firewall
-        ```bash
-        sudo ufw allow 80
-        sudo ufw allow 443
-        sudo ufw enable
-        ```
+- ## Firewall
+    ```bash
+    sudo ufw allow 80
+    sudo ufw allow 443
+    sudo ufw enable
+    ```

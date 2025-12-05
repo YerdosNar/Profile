@@ -263,7 +263,7 @@ app.get('/neofetch', (req, res) => {
 app.get('*', (req, res) => {
     if (req.isCurl) {
         res.type('text/plain');
-        res.send('404 - Not Found\nTry: curl profile.linm-m.com/projects or curl profile.linm-m.com/resume\n');
+        res.send('404 - Not Found\nTry: curl example.com or curl https://example.com\n');
     } else {
         // Redirect browser users back to home or show custom 404 page
         res.status(404).sendFile(path.join(publicPath, 'index.html'));

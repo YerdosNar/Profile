@@ -8,11 +8,11 @@
 |                                                                                         |
 |                                                                                         |
 |                                                                                         |
-|  [1;31mProjects: [1;33mcurl linm-m.com/neofetch             [38;2;23;147;209m                                        |
-|  [1;31mProjects: [1;33mcurl linm-m.com/projects             [38;2;23;147;209m                                        |
-|  [1;31mResume  : [1;33mcurl linm-m.com/resume               [38;2;23;147;209m                                        |
-|  [1;31mFor fun : [1;33mcurl linm-m.com/fun                  [38;2;23;147;209m                                        |
-|  [1;31mJustCURL: [1;33mcurl linm-m.com                      [38;2;23;147;209m                                        |
+|  [1;31mProjects: [1;33mcurl example.com/neofetch            [38;2;23;147;209m                                        |
+|  [1;31mProjects: [1;33mcurl example.com/projects            [38;2;23;147;209m                                        |
+|  [1;31mResume  : [1;33mcurl example.com/resume              [38;2;23;147;209m                                        |
+|  [1;31mFor fun : [1;33mcurl example.com/fun                 [38;2;23;147;209m                                        |
+|  [1;31mJustCURL: [1;33mcurl example.com                     [38;2;23;147;209m                                        |
 |                                                                                         |
 |                                                                                         |
 +=========================================================================================+[0m

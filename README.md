@@ -3,8 +3,8 @@
 - ## Simple profile page for recruiters.
 ![index.html Page](./public/assets/index_screenshot.png)
 
-- ## You can also `curl linm-m.com`
-![curl linm-m.com](./public/assets/curl_index.png)
+- ## You can also `curl example.com`
+![curl example.com](./public/assets/curl_index.png)
 
 - ## Installation
     - #### Clone to profile directory
@@ -66,10 +66,10 @@
 - ## `curl` support
     - #### `curl` without `https://`
         - ##### Caddyfile content
-            >To run `curl your.website.com` without writing `https://` I recommend two domain names (because I am inexperienced, and I don't know other ways)
+            >To run `curl example.com` without writing `https://` I recommend two domain names (because I am inexperienced, and I don't know other ways)
 
             ```Caddyfile
-            your.website.com:80 { # This domain name for `curl`ing
+            example.com:80 { # This domain name for `curl`ing
                 root * /var/www/profile/public # or your own
                 @terminal {
                     header User-Agent *curl*
@@ -91,28 +91,28 @@
 
                 handle {
                     header Content-Type "text/plain"
-                    response "Terminal only. Use `curl your.website.com` or visit `secure.website.com`" 403
+                    response "Terminal only. Use `curl example.com` or visit `secure.example.com`" 403
                 }
             }
 
-            secure.website.com:443 { # This domain name for browsing
+            secure.example.com:443 { # This domain name for browsing
                 reverse_proxy localhost:3000
             }
             ```
             Try
             ```bash
-            curl your.website.com
+            curl example.com
             ```
     - #### `curl` with `https://`
         - ##### Caddyfile content:
             ```Caddyfile
-            your.website.com {
+            example.com {
                 reverse_proxy localhost:3000
             }
             ```
             Try
             ```
-            curl https://your.website.com
+            curl https://example.com
             ```
     - #### Firewall
         ```bash

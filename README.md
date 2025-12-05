@@ -30,6 +30,7 @@
     ```bash
     bash <(curl -Ls https://raw.githubusercontent.com/YerdosNar/Profile/master/install.sh)
     ```
+    >Required commands should be installed manually though.
 
 - ## Manual installation
     - #### Clone to profile directory

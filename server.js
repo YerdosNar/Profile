@@ -15,7 +15,7 @@ const protectedAssetsPath = path.join(__dirname, 'protected-assets');
 // SECURITY: Store password hash instead of plain text
 // generate hash using `generate-hash.js`
 // Usage: ./generate-hash.js <your_password>
-const SERVER_ASSET_PASSWORD_HASH = '$2b$10$bUO9p181Gmie3tzPZinywe341H94CQimDMVXiD3f0lDEDh4uJlFRi';
+const SERVER_ASSET_PASSWORD_HASH = '$hashed_password';
 
 // Store authenticated tokens (in production, use Redis or a proper session store)
 const authTokens = new Map(); // token -> { expires: Date }

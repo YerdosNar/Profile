@@ -51,7 +51,8 @@
     ```bash
     bash <(curl -Ls https://raw.githubusercontent.com/YerdosNar/Profile/master/install.sh)
     ```
-    >Required commands should be installed manually though.
+    >Required commands should be installed manually though.\
+    >Change contact information in `public/script.js`
 
 ---
 - ## Manual installation
@@ -110,6 +111,10 @@
         [Install]
         WantedBy=multi-user.target
         ```
+
+    - #### Change `public/script.js`
+        Navigate to `~/Contact` and change to your own name.
+        Navigate to `~/Projects` and change to your own projects.
 
 ---
 - ## `curl` support

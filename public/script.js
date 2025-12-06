@@ -412,11 +412,11 @@ async function executeCommand(input) {
             } else if (args[0] === 'contact.txt') {
                 if (currentDir === '~/Contact' || currentDir === '~') {
                     addToHistory(input, `<h2>Contact</h2>
-                            <p>📧 Email: <span class="file-name">yerdosnarzhigit@gmail.com</span></p>
-                            <p>👾 GitHub: <a href="https://github.com/YerdosNar" target="_blank" class="file-name">github.com/YerdosNar</a></p>
-                            <p>💼 LinkedIn: <a href="https://linkedin.com/in/YerdosNar" class="file-name">YerdosNar</a></p>
-                            <p>🐦 Twitter/X: <a href="https://x.com/YerdosNar" class="file-name">@YerdosNar</a></p>
-                            <p>📷 Instagram: <a href="https://instagram.com/uvenni" class="file-name">@uvenni</a></p>`);
+                            <p>📧 Email: <span class="file-name">userEmail@gmail.com</span></p>
+                            <p>👾 GitHub: <a href="https://github.com/UserName" target="_blank" class="file-name">github.com/UserName</a></p>
+                            <p>💼 LinkedIn: <a href="https://linkedin.com/in/UserName" class="file-name">UserName</a></p>
+                            <p>🐦 Twitter/X: <a href="https://x.com/userName" class="file-name">@userName</a></p>
+                            <p>📷 Instagram: <a href="https://instagram.com/userName" class="file-name">@userName</a></p>`);
                 } else {
                     addToHistory(input, `cat: ${args[0]}: No such file or directory`, true);
                 }

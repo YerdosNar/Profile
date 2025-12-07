@@ -469,7 +469,7 @@ async function executeCommand(input) {
                         // FIX #3: Added '-' to ls command so the long-format view triggers
                         setTimeout(() => executeCommand('ls -la'), 100);
                     } else {
-                        addToHistory(null, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span><br><img src="assets/failed.jpg" style="width: 266px; height: 266px; object-fit: cover; border-radius: 50%; box-shadow: 0 0 30px rgba(255, 0, 0, 1.0); margin-top: 10px;" alt="failed_attempt_image">', true);
+                        addToHistory(null, '<span style="color: #ff6b6b;">✗ Authentication failed. Invalid password.</span><br><img src="assets/failed.jpg" style="width: 266px; height: 266px; object-fit: cover; border-radius: 50%; box-shadow: 0 0 30px rgba(255, 0, 0, 1.0); margin-top: 10px; animation: blink-shadow 1s ease-in-out infinite;" alt="failed_attempt_image"><style>@keyframes blink-shadow { 0%, 100% { box-shadow: 0 0 30px rgba(255, 0, 0, 1.0); } 50% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.3); } }</style>', true);
                     }
                 } catch(error) {
                     addToHistory(null, '<span style="color: #ff6b6b;">✗ Server error. Try again later.</span>', true);

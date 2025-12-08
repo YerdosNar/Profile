@@ -2,12 +2,12 @@
 
 - ## Intro:
     - #### [Explanation](#basic-explanation)
-    - #### [Requirements](#requirements)
-    - #### [Structure](#structure)
+    - #### [Requirements](#requirements-1)
+    - #### [Structure](#structure-1)
     - #### [One-liner](#one-line-installation)
-    - #### [Manual installation](#manual-installation)
-    - #### [cURL support](#curl-support)
-    - #### [Firewall](#firewall)
+    - #### [Manual installation](#manual-installation-1)
+    - #### [cURL support](#curl-support-1)
+    - #### [Firewall](#firewall-1)
 
 ---
 - ## Basic explanation:

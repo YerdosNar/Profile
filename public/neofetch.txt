@@ -27,7 +27,7 @@
 [41C󰾲 GPU: [53GGood GPU Model Amazing @ 100.0 GHz
 [41C Memory: [53G500 MiB / 2 TiB (0.0%)
 [41C Disk: [53G1.0 GiB / 112.61 PiB (0.0%) - ext4
-[41C󰩟 Local IP: [53G127.0.0.1/8
+[41C󰩟 Local IP: [1m[31m[53G{{.RemoteIP}}
 [41C Battery: [53G100% (∞ remaining) [Discharging]
 
 

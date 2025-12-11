@@ -114,6 +114,8 @@ $http_domain:80 {
         rewrite /fun fun.txt
         rewrite / index.txt
 
+        templates
+
         file_server
     }
 

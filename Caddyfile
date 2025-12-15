@@ -1,0 +1,44 @@
+example.com:80 {
+    root * /var/www/profile/public
+    @terminal {
+        header User-Agent *curl*
+        header User-Agent *wget*
+        header User-Agent *fetch*
+    }
+
+    handle @terminal {
+        header Content-Type "text/plain; charset=utf-8"
+
+        rewrite /neofetch neofetch.txt
+        rewrite /projects projects.txt
+        rewrite /resume resume.txt
+        rewrite /fun fun.txt
+
+        rewrite / index.txt
+
+        templates
+
+        file_server
+    }
+
+    handle {
+        redir example.com:443{uri}
+    }
+}
+
+example.com:443 {
+    tls {
+        protocols tls1.3
+    }
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options nosniff
+        X-Frame-Options SAMEORIGIN
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+        -X-Powered-By
+    }
+
+    reverse_proxy localhost:3000
+}

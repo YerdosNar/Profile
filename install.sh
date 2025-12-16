@@ -8,6 +8,8 @@ readonly cyan="\033[36m"
 readonly bold="\033[1m"
 readonly nc="\033[0m"
 
+LOG_FILE="/tmp/.profile_$$.txt"
+
 info()    { echo -e "${blue}[i]${nc} $1"; }
 success() { echo -e "${green}[✓]${nc} $1"; }
 warn()    { echo -e "${yellow}[!]${nc} $1"; }

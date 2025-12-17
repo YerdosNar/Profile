@@ -70,6 +70,7 @@ validate_domain() {
 
 write_caddyfile() {
     info "Caddyfile installation"
+    local base_caddyfile=$(cat Caddyfile)
     local http_domain="$1"
     local https_domain="$2"
 

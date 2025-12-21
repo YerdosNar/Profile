@@ -1,20 +1,54 @@
 #!/usr/bin/env bash
 
+readonly noc="\033[0m"
 readonly red="\033[31m"
-readonly green="\033[32m"
-readonly yellow="\033[33m"
-readonly blue="\033[34m"
-readonly cyan="\033[36m"
-readonly bold="\033[1m"
-readonly nc="\033[0m"
+readonly grn="\033[32m"
+readonly yel="\033[33m"
+readonly blu="\033[34m"
+readonly cyn="\033[36m"
+readonly bld="\033[1m"
+
+WIDTH=$(tput cols)
+[ "$WIDTH" -gt 90 ] && WIDTH=85
+
+# Logic to truncate and pad
+print_line() {
+    local symbol="$1"
+    local color="$2"
+    local raw_msg="$3"
+    local out_stream="${4:-1}" # Default to stdout (1)
+
+    # 1. Truncate the message to the WIDTH
+    local msg="${raw_msg:0:$((WIDTH-3))}"
+    local msg_len=${#msg}
+
+    # 2. Calculate dots (if any)
+    local dots_needed=$((WIDTH - msg_len))
+    local dots=""
+    if [ "$dots_needed" -gt 0 ]; then
+        dots=$(printf '%*s' "$dots_needed" '' | tr ' ' '.')
+    fi
+
+    # 3. Print the formatted line
+    printf "${color}${bld}[%s]>${noc}%s${color}${bld}%s<[%s]${noc}\n" \
+        "$symbol" "$msg" "$dots" "$symbol" >&"$out_stream"
+}
+
+info()    { print_line "i" "$blu" "$1"       ;  }
+success() { print_line "✓" "$grn" "$1"       ;  }
+warn()    { print_line "!" "$yel" "$1"       ;  }
+error()   { print_line "X" "$red" "$1" 2     ;  }
+banner()    { echo -e "${cyn}${bld}$1${noc}" ;  }
+
+log_info()      { echo "[ INFO ]  $1" >> "$LOG_FILE";       }
+log_success()   { echo "[SUCCESS] $1" >> "$LOG_FILE"       &&
+                  echo ""             >> "$LOG_FILE";       }
+log_warn()      { echo "[ WARN ]  $1" >> "$LOG_FILE";       }
+log_error()     { echo "[ ERROR ] $1" >> "$LOG_FILE" 2>&1;  }
+log_banner()    { echo "[BANNER ] $1" >> "$LOG_FILE";       }
 
 LOG_FILE="/tmp/.profile_$$.txt"
-
-info()    { echo -e "${blue}[i]${nc} $1"; }
-success() { echo -e "${green}[✓]${nc} $1"; }
-warn()    { echo -e "${yellow}[!]${nc} $1"; }
-error()   { echo -e "${red}[✗]${nc} $1" >&2; }
-banner()  { echo -e "${cyan}${bold}$1${nc}"; }
+INSTALL_DIR="/var/www/profile_$$"
 
 check_requirements() {
     info "Checking the requirements"
@@ -34,14 +68,14 @@ check_requirements() {
         success "www-data user exists"
     fi
 
-    info "Checking /var/www/profile directory"
-    if [ -d /var/www/profile ] && [ "$(ls -A /var/www/profile 2>/dev/null)" ]; then
-        error "/var/www/profile already exists and is not empty"
-        warn "Remove it first with: sudo rm -rf /var/www/profile"
+    info "Checking $INSTALL_DIR directory"
+    if [ -d "$INSTALL_DIR" ] && [ "$(ls -A /var/www/profile* 2>/dev/null)" ]; then
+        error "$INSTALL_DIR already exists and is not empty"
+        warn "Remove it first with: sudo rm -rf $INSTALL_DIR"
         exit 1
     fi
-    sudo mkdir -p /var/www/profile
-    success "Created /var/www/profile directory"
+    sudo mkdir -p "$INSTALL_DIR"
+    success "Created $INSTALL_DIR directory"
 
     local missing_cmds=()
     for cmd in curl ufw systemctl caddy npm node; do
@@ -61,25 +95,26 @@ check_requirements() {
 
 validate_domain() {
     local domain="$1"
+    info "Validating domain name..."
     if [[ ! "$domain" =~ ^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z0-9]{2,}$ ]]; then
         error "Invalid domain name format: $domain"
         return 1
     fi
+    success "Domain is valid!"
     return 0
 }
 
 write_caddyfile() {
     info "Caddyfile installation"
     local base_caddyfile=$(cat Caddyfile)
-    local http_domain="$1"
-    local https_domain="$2"
+    local domain="$1"
 
     cat > caddyfile << EOF
 # ==========================
-# $https_domain config
+# $domain config
 # ==========================
 # For browsing
-$https_domain:443 {
+$domain:443 {
     tls {
         protocols tls1.3
     }
@@ -96,13 +131,9 @@ $https_domain:443 {
     reverse_proxy localhost:3000
 }
 
-EOF
-
-    if [ "$http_domain" != "no" ]; then
-        cat >> Caddyfile_temp << EOF
-# To support "curl" without "https://"
-$http_domain:80 {
-    root * /var/www/profile/public
+# Support cURL without https
+$domain:80 {
+    root * $INSTALL_DIR/public
     @terminal {
         header User-Agent *curl*
         header User-Agent *wget*
@@ -113,6 +144,7 @@ $http_domain:80 {
         header Content-Type "text/plain; charset=utf-8"
 
         rewrite /projects projects.txt
+        rewrite /neofetch neofetch.txt
         rewrite /resume resume.txt
         rewrite /fun fun.txt
         rewrite / index.txt
@@ -123,13 +155,10 @@ $http_domain:80 {
     }
 
     handle {
-        header Content-Type "text/plain"
-        respond "Terminal only. Use 'curl $http_domain' or visit '$https_domain'" 403
+        redir https://profile.linm-m.com{uri}
     }
 }
 EOF
-    fi
-
 
     if [ -f /etc/caddy/Caddyfile ] && [ -s /etc/caddy/Caddyfile ]; then
         warn "Existing Caddyfile found"
@@ -138,19 +167,18 @@ EOF
         append=${append:-Y}
         if [[ "$append" =~ ^[Yy]$ ]]; then
             info "Appending..."
-            echo "" | sudo tee -a /etc/caddy/Caddyfile > /dev/null
-            sudo cat Caddyfile_temp | sudo tee -a /etc/caddy/Caddyfile > /dev/null
+            echo "# Appended in $(date)" | sudo tee -a /etc/caddy/Caddyfile
+            cat caddyfile | sudo tee -a /etc/caddy/Caddyfile
             warn "Appended to existing Caddyfile. Review /etc/caddy/Caddyfile to remove any conflicting config."
             success "Appended!"
         else
             warn "Not appended. Caddyfile saved to /var/www/profile/Caddyfile_temp"
-            sudo cp Caddyfile_temp /var/www/profile/
+            sudo cp caddyfile /var/www/profile/
             return 0
         fi
     else
-        sudo cp Caddyfile_temp /etc/caddy/Caddyfile
+        sudo cp caddyfile /etc/caddy/Caddyfile
     fi
-    rm -f Caddyfile_temp
 
     sudo caddy fmt --overwrite /etc/caddy/Caddyfile 2>/dev/null || true
     if sudo caddy validate --config /etc/caddy/Caddyfile 2>&1 | grep -q "valid"; then
@@ -158,7 +186,6 @@ EOF
     else
         error "Caddyfile validation failed"
         warn "Check /etc/caddy/Caddyfile for syntax errors"
-        sudo caddy validate --config /etc/caddy/Caddyfile
         exit 1
     fi
 

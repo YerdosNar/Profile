@@ -153,10 +153,6 @@ $domain:80 {
 
         file_server
     }
-
-    handle {
-        redir https://profile.linm-m.com{uri}
-    }
 }
 EOF
 
